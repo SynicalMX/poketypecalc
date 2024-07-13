@@ -1,15 +1,15 @@
 // Some constants for damage effectiveness.
-const MULTI_SUPER_EFFECTIVE = 2;
-const MULTI_EFFECTIVE = 1;
-const MULTI_INEFFECTIVE = 0.5;
-const MULTI_IMMUNE = 0;
+export const MULTI_SUPER_EFFECTIVE = 2;
+export const MULTI_EFFECTIVE = 1;
+export const MULTI_INEFFECTIVE = 0.5;
+export const MULTI_IMMUNE = 0;
 
 
 // This abstract class handles all Type related stuff, every type class inherits it.
 export default abstract class Type {
 	public name: string;
 	public effectives: Map<Type, number> = new Map();
-	private static types: Map<string, Type> = new Map();
+	public static types: Map<string, Type> = new Map();
 
 	constructor(name: string) {
 		this.name = name;
@@ -74,20 +74,6 @@ export default abstract class Type {
 
 	// Helper method for all effectiveness setters (immune, ineffective, effective, superEffective).
 	private setEffectiveness(type: Type, multi: number) {
-		if (this.effectives.has(type)) {
-			const curMulti: number = <number>this.effectives.get(type);
-			let newMulti: number = 0;
-
-			if (curMulti >= 1) {
-				newMulti = curMulti + multi;
-			} else {
-				newMulti = curMulti - multi;
-			}
-
-			this.effectives.set(type, newMulti);
-			return;
-		};
-
 		this.effectives.set(type, multi)
 	}
 
@@ -107,17 +93,20 @@ export default abstract class Type {
 
 // FIXME: This class outputs partially correct data. More research might suffice.
 export class DualType {
+	public primary: Type;
+	public secondary: Type;
 	public types: Map<string, Type> = new Map();
 	public effectives: Map<Type, number> = new Map();
 
 	constructor(primary: Type, secondary: Type) {
+		this.primary = primary;
+		this.secondary = secondary;
 		this.addType(primary);
 		this.addType(secondary);
 	}
 
 	public printCoverage() {
-		let typeIter = this.types.values();
-		console.log(`Coverage of types '${typeIter.next().value}' and '${typeIter.next().value}':`);
+		console.log(`Coverage of types '${this.primary.name}' and '${this.secondary.name}':`);
 		this.effectives.forEach((multi, type) => {
 			console.log(`\t${type.name}: ${multi.toString()}`);
 		});
@@ -129,13 +118,7 @@ export class DualType {
 		type.effectives.forEach((multi, t) => {
 			if (this.effectives.has(t)) {
 				const curMulti: number = <number>this.effectives.get(t);
-				let newMulti: number = 0;
-
-				if (curMulti >= 1) {
-					newMulti = curMulti + multi;
-				} else {
-					newMulti = curMulti - multi;
-				}
+				const newMulti = curMulti * multi;
 
 				this.effectives.set(t, newMulti);
 				return;
@@ -147,6 +130,8 @@ export class DualType {
 }
 
 // From here on out, the file contains all the type information.
+// The schema for all the Type classes is 'TypeName'
+
 // TODO: Probably infer that a type is effective unless specified.
 
 class TypeBug extends Type {
