@@ -1,6 +1,10 @@
-import Type, { DualType } from "./types.js";
+import SingleTypeCalc, { DualTypeCalc } from "./calc.js";
+import Type from "./types.js";
 
 Type.init();
+const single = new SingleTypeCalc();
+const dual = new DualTypeCalc();
 
-const type = new DualType(Type.getType("fire"), Type.getType("fairy"));
-type.printCoverage();
+single.calc();
+console.log();
+dual.calc();
