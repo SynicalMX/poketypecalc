@@ -1,0 +1,17 @@
+{
+  "name": "poketypecalc",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "out/index.js",
+  "scripts": {
+    "watch": "tsc -w",
+    "start": "node ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.5.3"
+  }
+}
